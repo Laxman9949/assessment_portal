@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Panel - Codevocado</title>
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+<body>
+
+<!-- ================= NAVBAR ================= -->
+<header class="navbar">
+    <a href="{{ url_for('index') }}" class="nav-brand" style="text-decoration:none;color:inherit;">
+        <img src="{{ url_for('static', filename='logo.png') }}" alt="Logo">
+        <div>
+            <h1>Codevocado</h1>
+            <span>Online Examination System</span>
+        </div>
+    </a>
+
+    <div class="menu-toggle" onclick="toggleMenu()">☰</div>
+
+    <div class="nav-wrapper" id="navMenu">
+        <div class="nav-cta">
+
+            {% if session.get('user_id') %}
+                <span class="user-welcome">
+                    Logged in as <b>{{ session.get('username') }}</b>
+                </span>
+
+                <a href="{{ url_for('index') }}" class="btn-outline">Dashboard</a>
+                <a href="{{ url_for('logout') }}" class="btn-solid">Sign Out</a>
+            {% else %}
+                <script>window.location.href = "{{ url_for('login') }}";</script>
+            {% endif %}
+
+        </div>
+    </div>
+</header>
+
+<!-- ================= MAIN DASHBOARD ================= -->
+<div class="dashboard-container">
+
+    <div class="dashboard-header">
+        <div>
+            <h2 style="font-size:2rem;">Admin Dashboard</h2>
+            <p style="color:#64748b;">
+                Create, manage and monitor online assessments
+            </p>
+        </div>
+
+        <button class="btn-solid" onclick="openCreateTestModal()">
+            ➕ New Assessment
+        </button>
+    </div>
+
+    <!-- ================= STATISTICS ================= -->
+    <div class="stats-grid">
+
+        <div class="stat-card">
+            <div class="stat-icon bg-purple">📝</div>
+            <div class="stat-info">
+                <h3>Total Tests</h3>
+                <div class="value" id="statTotal">0</div>
+            </div>
+        </div>
+
+        <div class="stat-card">
+            <div class="stat-icon bg-green">⏱️</div>
+            <div class="stat-info">
+                <h3>Running Tests</h3>
+                <div class="value" id="statActive">0</div>
+            </div>
+        </div>
+
+        <div class="stat-card">
+            <div class="stat-icon bg-blue">🎓</div>
+            <div class="stat-info">
+                <h3>Registered Users</h3>
+                <div class="value" id="statStudents">0</div>
+            </div>
+        </div>
+
+        <div class="stat-card">
+            <div class="stat-icon bg-orange">📌</div>
+            <div class="stat-info">
+                <h3>Pending Results</h3>
+                <div class="value" id="statPending">0</div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- ================= TABLE ================= -->
+    <div class="table-container">
+        <table class="assessment-table" id="assessmentTable">
+            <thead>
+                <tr>
+                    <th>Assessment Title</th>
+                    <th>Start Time</th>
+                    <th>Time Limit</th>
+                    <th>Current Status</th>
+                    <th>Manage</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Loaded dynamically -->
+            </tbody>
+        </table>
+    </div>
+
+</div>
+
+<!-- ================= CREATE TEST MODAL ================= -->
+<div id="createTestModal" class="modal">
+
+    <div class="modal-content modal-large">
+
+        <span class="close" onclick="closeCreateTestModal()">&times;</span>
+
+        <h2>Create New Online Test</h2>
+
+        <form id="createTestForm">
+
+            <div class="form-grid">
+
+                <div class="form-group">
+                    <label>Assessment Name</label>
+                    <input type="text" name="title" placeholder="Enter test name" required>
+                </div>
+
+                <div class="form-group">
+                    <label>Exam Duration (minutes)</label>
+                    <input type="number" name="duration" required>
+                </div>
+
+                <div class="form-group">
+                    <label>Maximum Marks</label>
+                    <input type="number" name="total_marks" required>
+                </div>
+
+                <div class="form-group">
+                    <label>Start Date & Time</label>
+                    <input type="datetime-local" name="start_date">
+                </div>
+
+                <div class="form-group">
+                    <label>End Date & Time</label>
+                    <input type="datetime-local" name="end_date">
+                </div>
+
+            </div>
+
+            <div class="form-group">
+                <label>Test Instructions</label>
+                <textarea name="description" rows="3"
+                    placeholder="Enter exam guidelines"></textarea>
+            </div>
+
+            <div id="questionsContainer">
+                <h3>Question Bank</h3>
+            </div>
+
+            <button type="button" class="btn-outline" onclick="addQuestion()">
+                ➕ Add MCQ
+            </button>
+
+            <div class="form-actions">
+                <button type="submit" class="btn-solid">
+                    Save Test
+                </button>
+            </div>
+
+        </form>
+
+    </div>
+</div>
+
+<script src="{{ url_for('static', filename='script.js') }}"></script>
+
+<script>
+    document.addEventListener("DOMContentLoaded", fetchDashboardTests);
+</script>
+
+</body>
+</html>
