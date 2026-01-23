@@ -1,4 +1,3 @@
-
 function toggleMenu() {
   const menu = document.getElementById("navMenu");
   menu.classList.toggle("active");
@@ -357,4 +356,17 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     });
   }
+});
+document.getElementById("createTestForm").addEventListener("submit", async function(e){
+    e.preventDefault();
+
+    const formData = new FormData(this);
+
+    const response = await fetch("/create-assessment", {
+        method: "POST",
+        body: formData
+    });
+
+    const data = await response.json();
+    alert(data.message);
 });
